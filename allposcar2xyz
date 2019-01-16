@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+#modified version of script for interfacing with phono3py
+import argparse
+import glob
+import ase.io
+
+parser=argparse.ArgumentParser(description='xyz file creation input', fromfile_prefix_chars='@')
+parser.add_argument('--prefix', metavar='prefix for hdnnpy tag', type=str,action='store')
+
+args=parser.parse_args()
+
+prefix = args.prefix
+poscars_init = glob.glob('POSCAR-[0-9]*')
+xyz = 'disp.xyz'
+poscars=sorted(poscars_init, key=str.lower)
+for poscar in poscars:
+    print(poscar)
+    atoms = ase.io.read(poscar, format='vasp')
+    atoms.info['tag'] = prefix + atoms.get_chemical_formula()
+    ase.io.write(xyz, atoms, format='xyz', append=True)
