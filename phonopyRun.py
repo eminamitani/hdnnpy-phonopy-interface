@@ -31,13 +31,15 @@ shutil.copy(prout+"prediction_result.npz","./prediction_result.npz")
 '''
 read displacement informations from disp.yaml
 '''
-with open('disp.yaml') as stream:
+with open('phonopy_disp.yaml') as stream:
     datas=yaml.safe_load(stream)
 
-natom=datas['natom']
 
+''' in phonopy higher than version 1.5.1, displacements data are written in phonopy_disp.yaml
+natom=datas['natom']
 print("number of atoms")
 print(natom)
+'''
 
 disps=datas['displacements']
 
