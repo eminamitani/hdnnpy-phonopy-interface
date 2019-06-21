@@ -35,11 +35,11 @@ with open('phonopy_disp.yaml') as stream:
     datas=yaml.safe_load(stream)
 
 
-''' in phonopy higher than version 1.5.1, displacements data are written in phonopy_disp.yaml
-natom=datas['natom']
+#in phonopy higher than version 1.5.1, displacements data are written in phonopy_disp.yaml
+natom=len(datas['supercell']['points'])
 print("number of atoms")
 print(natom)
-'''
+
 
 disps=datas['displacements']
 
