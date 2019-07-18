@@ -111,7 +111,7 @@ with open('band_conf', "w") as bp:
     bp.write("DIM=" +" "+str(args.dim[0])+" "+str(args.dim[1]) +" "+ str(args.dim[2]) +"\n")
     bp.write("BAND=0.0 0.0 0.0  0.5 0.0 0.5 0.375 0.375 0.75 0.0 0.0 0.0 0.5 0.5 0.5 \n")
 
-band_command=['phonopy', '-p', '-s', 'band.conf', '--band anto' , '-c', poscar_seed]
+band_command=['phonopy', '-p', '-s', 'band_conf', '--band=auto' , '-c', poscar_seed]
 gd=subprocess.run(band_command)
 
 plot_command=['phonopy-bandplot', '--gnuplot', 'band.yaml']
