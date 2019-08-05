@@ -19,6 +19,13 @@ for fhdf in flist:
 
     temp=f['temperature']
 
+    #write down to txt file
+    with open("data"+mesh+".dat", 'w') as data:
+        data.write("# temperature(K)  xx-component (W/mK)  yy-component (W/mK) zz-component (W/mK) \n")
+        for i in range(len(temp)):
+            data.write(str(temp[i]) + "  " +str(kxx[i]) + "  " + str(kyy[i]) +"  "+ str(kzz[i]) +"\n")
+
+
     plt.figure(figsize=(12,5), dpi=120)
     plt.subplots_adjust(wspace=0.5)
 
