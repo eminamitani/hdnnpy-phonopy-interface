@@ -6,6 +6,7 @@ More generic code for interfacing hdnnpy and phono3py
 import argparse
 import glob
 import sys
+import yaml
 
 import ase.io
 import subprocess
@@ -13,11 +14,7 @@ from pathlib import Path
 import shutil
 from distutils.dir_util import copy_tree
 import os
-from traitlets import ( Bool, CaselessStrEnum, Dict, Float,
-    Int, List, TraitType, Tuple, Unicode, )
-from traitlets.config import Application
 import pathlib
-import traitlets.config
 
 
 
@@ -25,92 +22,58 @@ import traitlets.config
 using traitlets.config to more generic purpose.
 same as hdnnpy
 '''
-class Path(TraitType):
-    default_value = '.'
-    info_text = 'a pathlib.Path instance'
 
-    def validate(self, obj, value):
-        if isinstance(value, pathlib.Path):
-            return value.absolute()
-        elif isinstance(value, str):
-            return pathlib.Path(value).absolute()
-        else:
-            self.error(obj, value)
+class phono3pyConfig:
 
-class Configurable(traitlets.config.Configurable):
-    def dump(self):
-        dic = {key: value for key, value in self._trait_values.items()
-               if key not in ['config', 'parent']}
-        return dic
-
-class phono3pyConfig(Configurable):
-    prefix=Unicode(help="prefix for hdnnpy config file").tag(config=True)
-    poscar=Unicode(default_value="POSCAR", help="POSCAR name for unitcell data").tag(config=True)
-    dim=List(trait=Unicode(), help="dimension of supercell for fc3 calculation").tag(config=True)
-    dimfc2=List(trait=Unicode(), help="dimension of sulercell for fc2 calculation").tag(config=True)
-    strpa=List(trait=Unicode(), help="lattice vector to convert conventional to primitive cell \
-                                   if POSCAR is conventional Unitcell").tag(config=True)
-    symfc=Bool(default_value=False, help="using symmetric correction on fc2 and fc3 calculation").tag(config=True)
-    pipfile=Path(help='path for your Pipfile').tag(config=True)
-    header = List(trait=Unicode(), help="header for job script setting")
+    prefix=None
+    poscar=None
+    dim=None
+    symfc=None
+    strpa=None
+    dimfc2=None
+    pipfile=None
 
 
+    def __init__(self, path):
+        with open('phono3py_config.yaml') as f:
+            config=yaml.safe_load(f)
+        self.prefix=config['prefix']
+        self.poscar=config['poscar']
+        self.dim=config['dim']
+        self.symfc=config['symfc']
+        self.pipfile=config['pipfile']
 
-class prep(Application):
-    name=Unicode(u'prep')
-    verbose = Bool(
-        True,
-        help='Set verbose mode'
-        ).tag(config=True)
-    description='preperation process to obtain 2nd and 3rd order force constant by hdnnpy'
-    classes=List([phono3pyConfig])
-    config_file=Path('phono3py_config.py', help='Load this config file')
+        ##optional
+        if('dimfc2' in config):
+            self.dimfc2=config['dimfc2']
+        if('strpa' in config):
+            self.strpa = config['strpa']
 
-    def __init__(self,**kwargs):
-        super().__init__(**kwargs)
-        self.phono3py_config = None
 
-    def initialize(self, argv=None):
-        self.parse_command_line(argv)
-        self.load_config_file(self.config_file)
-        print(self.loaded_config_files)
-        self.phono3py_config=phono3pyConfig(config=self.config)
-        self.update_config(self.config)
-        print(self.phono3py_config.symfc)
-        print(self.phono3py_config.poscar)
+class hdnnpy2phono3py:
+    phono3py_config=None
+    def __init__(self):
+        self.phono3py_config = phono3pyConfig('phono3py_config.yaml')
+        #print(self.phono3py_config)
 
-    def start(self):
+
+    def prep(self):
         pc=self.phono3py_config
-        print(pc.symfc)
-        print(pc.dim)
         strdim = "--dim= " + str(pc.dim[0]) + " " + str(pc.dim[1]) + " " \
                  + str(pc.dim[2])
+        if(pc.dimfc2 is not None):
+            strdim=strdim +"    --dimfc2= " + str(pc.dimfc2[0]) + " " + str(pc.dimfc2[1]) + " " \
+                 + str(pc.dimfc2[2])
+        print(strdim)
 
-class run(Application):
-    name=Unicode(u'hdnnpy2phono3py run')
-    description='phono3py run using FORCES_FC2 and FORCES_FC3 evaluated by hdnnpy'
 
-
-class phono3pyInterface(Application):
-    name = Unicode(u'hdnnpy2phono3py')
-    classes=[
-        prep,
-        run
-    ]
-
-    subcommands = {
-        'prep':(prep,prep.description),
-        'run':(run,run.description)
-    }
-
-    def initialize(self, argv=None):
-        assert  sys.argv[1] in self.subcommands, \
-            'Only `prep` and `run` are' \
-             'avairable'
-        super().initialize(argv)
 
 if __name__ == '__main__':
-    phono3pyInterface.launch_instance()
+    interface=hdnnpy2phono3py()
+    if(sys.argv[1]=='prep'):
+        print('preperation run')
+        interface.prep()
+
 
 
 

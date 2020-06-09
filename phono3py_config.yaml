@@ -1,0 +1,7 @@
+dim: [2,2,2]
+symfc: True
+prefix: crystal
+poscar: POSCAR
+dimfc2: [3,3,3]
+prefix: crystal
+pipfile: /Users/emi/PycharmProjects/hdnnpy+phono3py/Pipfile
