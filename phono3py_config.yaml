@@ -3,5 +3,25 @@ symfc: True
 prefix: crystal
 poscar: POSCAR
 dimfc2: [3,3,3]
-prefix: crystal
 pipfile: /Users/emi/PycharmProjects/hdnnpy+phono3py/Pipfile
+nnpoutput: ../output
+fc3output: ../fc3-output
+fc2output: ../fc2-output
+mpicommand: mpirun -np 24
+jobscriptheader: |
+  #!/bin/csh
+  #$ -cwd
+  #$ -V -S /bin/bash
+  #$ -N prediction
+  #$ -o stdout
+  #$ -e stderr
+  #$ -q all.q
+  #$ -pe smp 24
+  export OMP_NUM_THREADS=1
+  root=$PWD
+  MPIROOT=/usr/local/openmpi-1.8.8/
+  export PATH=$MPIROOT/bin:$PATH
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MPIROOT/lib
+  export MANPATH=$MANPATH:$MPIROOT/share/man
+
+
