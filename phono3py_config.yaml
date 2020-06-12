@@ -3,6 +3,7 @@ symfc: True
 prefix: crystal
 poscar: POSCAR
 dimfc2: [3,3,3]
+mesh: [11,11,11]
 pipfile: /Users/emi/PycharmProjects/hdnnpy+phono3py/Pipfile
 nnpoutput: ../output
 fc3output: ../fc3-output
