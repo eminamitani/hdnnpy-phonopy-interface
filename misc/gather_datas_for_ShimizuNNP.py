@@ -25,31 +25,34 @@ dir = args[3]
 
 os.makedirs(dir, exist_ok=True)
 present = pathlib.Path('./')
-dirs = ([p for p in present.iterdir() if p.is_dir()])
+dirs = ([p for p in present.glob('scale*') if p.is_dir()])
+counter = 1
 
 for d in dirs:
     targets=[]
     subdirs = ([s for s in d.iterdir() if s.is_dir()])
+    #print(subdirs)
     targets += random.sample(subdirs, samples)
 
-print("total target number {}".format(len(targets)))
-#counter of the file
-counter=1
+    print("total target number {}".format(len(targets)))
+    #counter of the file
 
-for target in targets:
-    output=read(target+'/OUTCAR',format="vasp-out")
-    forces=output.get_forces()
-    positions=output.get_positions()
-    energy=output.get_total_energy()
-    natom=len(forces)
-    shutil.copy(target+'/XDATCAR',dir+'/positions_'+tag+str(natom)+"atoms"+"_"+str(counter)+".dat")
-    with open(dir+'/forces_'+tag+str(natom)+"atoms"+"_"+str(counter)+".dat",'w') as out:
-        out.write("--\n")
-        out.write(" POSITION                                       TOTAL-FORCE (eV/Angst) \n")
-        out.write(" ----------------------------------------------------------------------------------- \n ")
-        for i, p in enumerate(positions):
-            out.write(str(p[0]) + " " + str(p[1]) + " " + str(p[2]) + " " + str(forces[i][0]) + " " + str(
-                forces[i][1]) + " " + str(forces[i][1])+"\n")
-    with open(dir + '/energies_' + tag + str(natom) + "atoms" + "_" + str(counter) + ".dat", 'w') as ene:
-        ene.write(str(energy)+"\n")
-    counter+=1
+
+    for target in targets:
+        output=read(str(target)+'/OUTCAR',format="vasp-out")
+        forces=output.get_forces()
+        positions=output.get_positions()
+        energy=output.get_total_energy()
+        natom=len(forces)
+        shutil.copy(str(target)+'/XDATCAR',dir+'/positions_'+tag+str(natom)+"atoms"+"_"+str(counter)+".dat")
+        with open(dir+'/forces_'+tag+str(natom)+"atoms"+"_"+str(counter)+".dat",'w') as out:
+            out.write("--\n")
+            out.write(" POSITION                                       TOTAL-FORCE (eV/Angst) \n")
+            out.write(" ----------------------------------------------------------------------------------- \n ")
+            for i, p in enumerate(positions):
+                out.write(str(p[0]) + " " + str(p[1]) + " " + str(p[2]) + " " + str(forces[i][0]) + " " + str(
+                    forces[i][1]) + " " + str(forces[i][1])+"\n")
+        with open(dir + '/energies_' + tag + str(natom) + "atoms" + "_" + str(counter) + ".dat", 'w') as ene:
+            ene.write(str(energy)+"\n")
+        counter=counter+1
+        print(counter)
