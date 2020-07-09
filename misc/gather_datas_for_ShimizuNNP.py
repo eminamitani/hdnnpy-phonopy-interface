@@ -64,7 +64,7 @@ with open("input_tag.dat","w") as tagfile:
             #very tentative version
             with open(dir + '/info_' + tag + str(natom) + "atoms" + "_" + str(counter) + ".dat", 'w') as info:
                 info.write("\n")
-                info.write("Total_number_of_ions "+natom+"\n")
+                info.write("Total_number_of_ions "+str(natom)+"\n")
                 info.write("\n")
                 info.write("Ions_per_type 1 \n")
                 info.write("\n")
