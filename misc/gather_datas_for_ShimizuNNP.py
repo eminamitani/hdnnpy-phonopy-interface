@@ -57,7 +57,7 @@ with open("input_tag.dat","w") as tagfile:
                 out.write(" ----------------------------------------------------------------------------------- \n ")
                 for i, p in enumerate(positions):
                     out.write(str(p[0]) + " " + str(p[1]) + " " + str(p[2]) + " " + str(forces[i][0]) + " " + str(
-                        forces[i][1]) + " " + str(forces[i][1])+"\n")
+                        forces[i][1]) + " " + str(forces[i][2])+"\n")
             with open(dir + '/energies_' + tag + str(natom) + "atoms" + "_" + str(counter) + ".dat", 'w') as ene:
                 ene.write(str(energy)+"\n")
 

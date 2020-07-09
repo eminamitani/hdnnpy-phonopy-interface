@@ -8,5 +8,6 @@ force=a.get_forces()
 natom=len(pos)
 if(len(pos) != len(force)):
     print("something trouble")
-for i,p in enumerate(pos):
-    print(str(p[0])+" "+str(p[1])+" "+str(p[2])+" "+str(force[i][0])+" "+ str(force[i][1])+" "+str(force[i][1]))
+with open("results.txt","w") as r:
+    for i,p in enumerate(pos):
+        r.write(str(p[0])+" "+str(p[1])+" "+str(p[2])+" "+str(force[i][0])+" "+ str(force[i][1])+" "+str(force[i][2])+"\n")
