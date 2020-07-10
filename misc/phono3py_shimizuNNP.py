@@ -94,12 +94,18 @@ class nnp2phono3py:
 
         with open('predictionRun.sh', "w") as pr:
             pr.write(pc.jobscriptheader)
-            pr.write("for i in $(find ./ -mindepth 1 -maxdepth 1 -type d); do \n")
+            pr.write("for i in $(find ./ -name \"disp-*\" -type d); do \n")
             pr.write('echo ${i} \n')
             pr.write('cd ${i} \n')
             #here I assume a.out is in the upper directory
             pr.write('cp ../a.out . \n')
+            pr.write('cp -r ../data_weight . \n')
+            pr.write('cp -r ../data_maxmin . \n')
+            pr.write('cp ../input_nnp.dat . \n')
+            pr.write('cp ../param_nnp.dat  . \n')
             pr.write(pc.mpicommand + " a.out \n")
+            pr.write('cd ../ \n')
+            pr.write('done \n')
 
 
     def run(self):
