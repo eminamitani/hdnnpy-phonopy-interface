@@ -121,6 +121,12 @@ git fetch
 git checkout -b master origin/master
 ```
 
+new version of gcc is installed by Macport
+```bash
+sudo port install gcc6
+sudo port select --set gcc mp-gcc6
+sudo port install OpenBLAS +gcc6
+```
 Then, make a minor change in `setup.py` if necessary.
 In gcc on Mac installed by Macport, 
 I encounter compile error caused by openmp related option.
